@@ -39,9 +39,13 @@ internal object DataModule {
     fun provideOkHttpClient(
         interceptor: HttpLoggingInterceptor,
         interceptors: Set<@JvmSuppressWildcards Interceptor>,
+        tokenInterceptor: TokenInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addNetworkInterceptor(interceptor)
+            .addInterceptor(tokenInterceptor)
+            .followRedirects(true)
+            .followSslRedirects(true)
             .apply { interceptors.forEach(::addInterceptor) }
             .build()
 

@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -68,11 +70,10 @@ internal fun ContentComponent(
         contentPadding = PaddingValues(InternTheme.dimensions.double),
         verticalArrangement = Arrangement.spacedBy(InternTheme.dimensions.double),
     ) {
-        /**
-         * TODO: Specify the [item key](https://developer.android.com/jetpack/compose/lists#item-keys) and [content type](https://developer.android.com/jetpack/compose/lists#content-type)
-         */
         items(
             items = items,
+            key = { item -> item.key },
+            contentType = { "item_ui_model" },
             itemContent = { item -> ItemComponent(item) },
         )
     }
@@ -141,8 +142,9 @@ private fun ItemComponent(item: ItemUiModel) = Card {
                     .clip(CardDefaults.shape),
                 contentDescription = title,
                 contentScale = ContentScale.Crop,
+                placeholder = rememberVectorPainter(Icons.Default.AccountCircle),
                 error = rememberVectorPainter(Icons.Default.Warning),
-                model = TODO("[Request an image download](https://github.com/coil-kt/coil#requests)"),
+                model = item.imageUrl,
             )
         }
     }
@@ -178,16 +180,41 @@ private fun ItemComponentPreview(
     ItemComponent(item)
 }
 
+
 private typealias HeaderAndItems = Pair<HeaderUiModel, List<ItemUiModel>>
 
 private class ContentComponentPreviewParameterProvider :
     PreviewParameterProvider<HeaderAndItems> by previewParameterProviderOf(
-        TODO("Define UI models for preview purposes")
+        Pair(
+            HeaderUiModel(
+                title = "Item Title 0",
+                description = "Item Description 0",
+                timestamp = "10:30 AM"
+            ),
+            listOf(
+                ItemUiModel(
+                    title = "Item Title 1",
+                    description = "Item Description 1.",
+                    imageUrl = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+                    timestamp = "12:00 PM"
+                ),
+                ItemUiModel(
+                    title = "Item Title 2",
+                    description = "Item Description 2.",
+                    imageUrl = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+                    timestamp = "01:15 PM"
+                )
+            )
+        )
     )
 
 private class HeaderComponentPreviewParameterProvider :
     PreviewParameterProvider<HeaderUiModel> by previewParameterProviderOf(
-        TODO("Define UI models for preview purposes")
+        HeaderUiModel(
+            title = "This is the header",
+            description = "Header description",
+            timestamp = "09:00 AM"
+        )
     )
 
 private class ItemComponentPreviewParameterProvider :
@@ -195,7 +222,7 @@ private class ItemComponentPreviewParameterProvider :
         ItemUiModel(
             title = "Item Title 0",
             description = "Item Description 0",
-            imageUrl = null,
+            imageUrl = "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
             timestamp = "10:00",
         ),
     )
